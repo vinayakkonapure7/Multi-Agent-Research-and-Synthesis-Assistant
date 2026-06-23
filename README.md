@@ -2,9 +2,11 @@
 
 AI-powered research automation platform — React frontend + FastAPI + LangChain backend.
 
+---
+
 ## Project Structure
 
-```
+```text
 research-assistant/
 ├── backend/              # FastAPI + LangChain
 │   ├── main.py           # API server (all routes)
@@ -15,103 +17,242 @@ research-assistant/
 │   ├── src/
 │   │   ├── App.jsx
 │   │   ├── index.css
-│   │   ├── components/   # Sidebar, WorkflowDashboard, ReviewPanel, Report
+│   │   ├── components/
+│   │   │   ├── Sidebar
+│   │   │   ├── WorkflowDashboard
+│   │   │   ├── ReviewPanel
+│   │   │   └── Report
 │   │   ├── services/
-│   │   │   └── api.js    # All backend calls here (toggle USE_MOCK)
+│   │   │   └── api.js
 │   │   └── data/
 │   │       └── mockData.js
 │   └── package.json
-├── start.bat             # Double click to run both servers (Windows)
+├── start.bat
 └── .gitignore
 ```
 
-## Quick Start (Windows)
+---
 
-### Step 1 — Add your OpenAI key
+# Setup Instructions
+
+## Step 1 — Add Your OpenAI API Key
+
+Create a `.env` file inside the backend folder:
+
+```bash
+cp backend/.env.example backend/.env
 ```
-copy backend\.env.example backend\.env
-```
-Open `backend\.env` in Notepad and add:
-```
+
+Update:
+
+```env
 OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxx
 ```
 
-### Step 2 — Switch to real backend
-In `frontend/src/services/api.js`, change line 8:
-```js
+---
+
+## Step 2 — Configure Frontend Mode
+
+Open:
+
+```text
+frontend/src/services/api.js
+```
+
+### Demo Mode
+
+```javascript
+const USE_MOCK = true
+```
+
+### Real OpenAI Backend
+
+```javascript
 const USE_MOCK = false
 ```
 
-### Step 3 — Run both servers
-Double click `start.bat`
-
-Two terminal windows will open:
-- **Backend:** http://localhost:8000  
-- **Frontend:** http://localhost:5173
-
-Open http://localhost:5173 in your browser.
-
 ---
 
-## Demo Mode (no OpenAI key needed)
+# Running the Application
 
-Keep `USE_MOCK = true` in `api.js` — full flow works with mock data.  
-Perfect for mid-evaluation demo.
+## macOS / Linux
 
----
+### Terminal 1 — Backend
 
-## API Endpoints
+```bash
+cd /Users/Course/Multi-Agent-Research-and-Synthesis-Assistant/backend
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Check backend + key status |
-| POST | `/api/generate-report` | Main endpoint — topic + files → report |
+source venv/bin/activate
 
-### Request format (`/api/generate-report`)
+python -m uvicorn main:app --reload
 ```
+
+Backend will run at:
+
+```text
+http://localhost:8000
+```
+
+---
+
+### Terminal 2 — Frontend
+
+```bash
+cd /Users/Course/Multi-Agent-Research-and-Synthesis-Assistant/frontend
+
+npm install
+
+npm run dev
+```
+
+Frontend will run at:
+
+```text
+http://localhost:5173
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+in your browser.
+
+---
+
+## Windows
+
+### Terminal 1 — Backend
+
+```cmd
+cd backend
+
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+python -m uvicorn main:app --reload
+```
+
+Backend:
+
+```text
+http://localhost:8000
+```
+
+---
+
+### Terminal 2 — Frontend
+
+```cmd
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Demo Mode
+
+No OpenAI API key is required.
+
+Keep:
+
+```javascript
+const USE_MOCK = true
+```
+
+The complete workflow runs using mock data and is suitable for project demonstrations and evaluations.
+
+---
+
+# API Endpoints
+
+| Method | Endpoint             | Description                      |
+| ------ | -------------------- | -------------------------------- |
+| GET    | /api/health          | Check backend and API key status |
+| POST   | /api/generate-report | Generate research report         |
+
+## Request Format
+
+```text
 Content-Type: multipart/form-data
+
 topic: string (required)
-files: PDF or TXT files (optional, multiple)
+
+files: PDF/TXT files (optional)
+
 urls: newline-separated URLs (optional)
 ```
 
-### Response format
+## Response Format
+
 ```json
 {
   "report": "# Title\n\n## Introduction\n...",
   "sources": {
-    "web": [{ "title": "...", "url": "...", "snippet": "..." }],
-    "files": [{ "name": "...", "preview": "..." }],
-    "urls": [{ "url": "...", "ok": true }]
+    "web": [
+      {
+        "title": "...",
+        "url": "...",
+        "snippet": "..."
+      }
+    ],
+    "files": [
+      {
+        "name": "...",
+        "preview": "..."
+      }
+    ],
+    "urls": [
+      {
+        "url": "...",
+        "ok": true
+      }
+    ]
   }
 }
 ```
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, Vite |
-| Backend | Python 3.11, FastAPI |
-| LLM Framework | LangChain (LCEL chain) |
-| LLM Provider | OpenAI GPT-4o-mini |
-| Web Search | DuckDuckGo (via LangChain) |
-| PDF Processing | PyPDFLoader (LangChain) |
-| URL Scraping | WebBaseLoader (LangChain) |
+| Layer          | Technology         |
+| -------------- | ------------------ |
+| Frontend       | React 18, Vite     |
+| Backend        | FastAPI            |
+| LLM Framework  | LangChain          |
+| LLM Provider   | OpenAI GPT-4o-mini |
+| Web Search     | DuckDuckGo         |
+| PDF Processing | PyPDFLoader        |
+| URL Scraping   | WebBaseLoader      |
 
 ---
 
-## Team
+# Team
 
-| Name | PNR | Role |
-|------|-----|------|
-| Anmol Gangwar | 260250125006 | — |
-| Mayur Patel | 260250125053 | — |
-| Prajal Patil | 260250125056 | — |
-| Vinayak Konapure | 260250125090 | — |
-| Rohit Kashyap | 260250120110 | Frontend |
+| Name             | PNR          |
+| ---------------- | ------------ |
+| Anmol Gangwar    | 260250125006 |
+| Mayur Patel      | 260250125053 |
+| Prajal Patil     | 260250125056 |
+| Vinayak Konapure | 260250125090 |
+| Rohit Kashyap    | 260250120110 |
 
-**Supervisor:** Ms. Shrishti Gupta, C-DAC Bangalore  
-**Programme:** PG Certificate in Advanced Computing, Feb 2026 batch
+**Supervisor:** Ms. Shrishti Gupta, C-DAC Bangalore
+
+**Programme:** PGCP in Big Data Analytics & Advanced Computing, Feb 2026 Batch
+
+**Group No.:** PGCP-CD-003

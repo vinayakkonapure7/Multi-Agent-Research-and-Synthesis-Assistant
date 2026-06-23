@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+langchain
+langchain-openai
+langchain-community
+ddgs
+duckduckgo-search
+pypdf
+beautifulsoup4
+requests

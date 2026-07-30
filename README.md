@@ -187,13 +187,14 @@ Writer Agent enforces the requested word-count ranges as section-level guidance.
   final citations before academic submission.
 ## Team
 
-|      Name            PRN        |
-| Rohit Kashyap    | 260250120110 |
-| Anmol Gangwar    | 260250125006 |
-| Mayur Patel      | 260250125053 |
-| Prajal Patil     | 260250125056 |
-| Vinayak Konapure | 260250125090 |
+| Name              | PRN           |
+|-------------------|---------------|
+| Rohit Kashyap     | 260250120110  |
+| Anmol Gangwar     | 260250125006  |
+| Mayur Patel       | 260250125053  |
+| Prajal Patil      | 260250125056  |
+| Vinayak Konapure  | 260250125090  |
 
-**Supervisor:** Ms. Shrishti Gupta, C-DAC Bangalore
-**Programme:** PGCP in Big Data Analytics & Advanced Computing, Feb 2026 Batch
-**Group No.:** PGCP-CD-003
+Supervisor: Ms. Shrishti Gupta, C-DAC Bangalore
+Programme: PGCP in Big Data Analytics & Advanced Computing, Feb 2026 Batch
+Group No.: PGCP-CD-003

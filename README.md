@@ -187,7 +187,7 @@ Writer Agent enforces the requested word-count ranges as section-level guidance.
   final citations before academic submission.
 ## Team
 
-|      Name            PNR        |
+|      Name            PRN        |
 | Rohit Kashyap    | 260250120110 |
 | Anmol Gangwar    | 260250125006 |
 | Mayur Patel      | 260250125053 |

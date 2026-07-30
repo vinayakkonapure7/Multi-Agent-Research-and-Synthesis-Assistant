@@ -1,258 +1,199 @@
 # Multi-Agent Research and Synthesis Assistant
 
-AI-powered research automation platform — React frontend + FastAPI + LangChain backend.
+An AI-powered web application that helps users move from a research topic,
+context, uploaded documents, and source links to a structured academic research
+report. The system uses a LangGraph-orchestrated multi-agent workflow and keeps
+the human reviewer in control before each section is finalized.
 
----
+## Tech stack
 
-## Project Structure
+- Programming: Python 3.11, JavaScript ES6+
+- Frontend: React, Vite, HTML5, CSS3
+- Backend: FastAPI, Uvicorn, REST JSON APIs
+- AI orchestration: LangGraph
+- LLM framework: LangChain-compatible prompt architecture
+- LLM provider: OpenAI GPT-4o / GPT-4.1 compatible models
+- Embeddings: OpenAI `text-embedding-3-small`
+- Vector database: ChromaDB
+- Retrieval: RAG, semantic search, BM25, MMR-style diversification
+- Web search: DuckDuckGo Search, optional Tavily fallback
+- Document processing: PyMuPDF, python-docx, openpyxl, OCR fallback
+- Text chunking: RecursiveCharacterTextSplitter-style chunking
+- Storage: SQLite, local upload/export folders
+- Environment management: `.env`, python-dotenv / Pydantic settings
+
+## How it works
+
+1. Enter a research topic and context/problem statement. Before anything is
+   sent to the server, a client-side pre-check rejects obviously-bad input
+   (too short, or word-shaped noise caught by a common-English-word
+   dictionary check) with an inline message, so gibberish never burns two
+   screens before being turned away. This is a fast, best-effort filter —
+   the backend's own LLM-based validation is still the real authority, and
+   runs afterward regardless.
+2. Upload optional source material: PDF, DOCX, XLSX, JSON, CSV/TSV, Markdown,
+   text, images, or URLs. Failed uploads and URL adds can be retried in place,
+   per row, without re-selecting files.
+3. LangGraph runs the Researcher, Summarizer, and Critic agents, shown to the
+   user as a staged pipeline with elapsed time rather than a bare spinner.
+4. The UI shows the Research Agent validation, Critic Agent report, and evidence
+   count/excerpts before writing begins.
+5. The user reviews the proposed research-paper outline and may edit, reorder,
+   delete, or add sections, or discard their edits and ask the agents to propose
+   a different outline from scratch (with an inline confirmation, since this
+   replaces manual changes).
+6. The Writer Agent drafts one section at a time, using optional per-section
+   guidance the user can supply before drafting.
+7. The user approves, edits manually, or regenerates each section with feedback;
+   prior drafts are kept as a version history the user can revisit or restore.
+8. Once every section is approved, the final report exports as `.docx`; the
+   export action stays disabled until that condition is met.
+9. Any failed request (loading a project, listing/uploading sources, generating
+   or approving an outline, drafting or approving a section) surfaces a
+   "Try again" action that retries the same operation with the same inputs,
+   distinguishing an unreachable backend from a server-side error.
+10. If the Research Agent's own validation still rejects a topic that made it
+    past the client-side pre-check, the project is labeled "Topic rejected"
+    (shown in `var(--accent-red)`) in "Your reports" instead of sitting there
+    forever as a misleading "Reviewing outline." Since the topic can't be
+    edited after creation, the fix is to delete that project (via the
+    existing delete-with-confirmation control) and start a new one.
+
+## Agent workflow
+
+- **Research Agent:** validates topic/context to reduce hallucination risk,
+  searches web sources, scrapes up to seven sites, and retrieves uploaded-source
+  chunks through hybrid RAG.
+- **Summarizer Agent:** removes noise and converts retrieved evidence into a
+  writer-ready research brief with key claims.
+- **Critic Agent:** checks consistency, unsupported claims, and evidence gaps
+  before the human review checkpoint.
+- **Writer Agent:** drafts the approved outline section by section using the
+  research brief, critic report, RAG excerpts, and web evidence.
+
+## Project structure
 
 ```text
-research-assistant/
-├── backend/              # FastAPI + LangChain
-│   ├── main.py           # API server (all routes)
-│   ├── requirements.txt  # Python dependencies
-│   ├── .env.example      # Copy this to .env and add your key
-│   └── .env              # Your OpenAI key (DO NOT commit)
-├── frontend/             # React (Vite)
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   ├── components/
-│   │   │   ├── Sidebar
-│   │   │   ├── WorkflowDashboard
-│   │   │   ├── ReviewPanel
-│   │   │   └── Report
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   └── data/
-│   │       └── mockData.js
-│   └── package.json
-├── start.bat
-└── .gitignore
+research-report-builder/
+├── backend/
+│   ├── app/
+│   │   ├── agents/
+│   │   │   ├── researcher/
+│   │   │   ├── summarizer/
+│   │   │   ├── critic/
+│   │   │   ├── writer/
+│   │   │   └── graph.py
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── db/
+│   │   └── services/
+│   ├── storage/
+│   ├── requirements.txt
+│   └── .env.example
+└── frontend/
+    ├── scripts/
+    │   └── gen-common-words.cjs   # regenerates src/lib/commonWords.js
+    ├── src/
+    │   ├── api/
+    │   ├── components/
+    │   ├── lib/
+    │   │   └── commonWords.js     # dictionary used by the topic pre-check
+    │   └── styles/
+    └── package.json
 ```
 
----
+## Setup
 
-# Setup Instructions
+### Prerequisites
 
-## Step 1 — Add Your OpenAI API Key
+- Python 3.11
+- Node.js 18+
+- OpenAI API key
+- Optional: Tesseract OCR for local OCR
+- Optional: Tavily API key if using `SEARCH_PROVIDER=tavily`
 
-Create a `.env` file inside the backend folder:
+### Backend on macOS/Linux
 
 ```bash
-cp backend/.env.example backend/.env
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn app.main:app --reload --port 8000
 ```
 
-Update:
+### Backend on Windows PowerShell
+
+```powershell
+cd backend
+py -3.11 -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+copy .env.example .env
+uvicorn app.main:app --reload --port 8000
+```
+
+Open `backend/.env` and set:
 
 ```env
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxx
+OPENAI_API_KEY=your_key_here
+SEARCH_PROVIDER=ddgs
+WEB_SEARCH_RESULTS=7
+WEB_SCRAPE_TIMEOUT_SECONDS=12
 ```
 
----
-
-## Step 2 — Configure Frontend Mode
-
-Open:
-
-```text
-frontend/src/services/api.js
-```
-
-### Demo Mode
-
-```javascript
-const USE_MOCK = true
-```
-
-### Real OpenAI Backend
-
-```javascript
-const USE_MOCK = false
-```
-
----
-
-# Running the Application
-
-## macOS / Linux
-
-### Terminal 1 — Backend
+### Frontend
 
 ```bash
-cd /Users/Course/Multi-Agent-Research-and-Synthesis-Assistant/backend
-
-source venv/bin/activate
-
-python -m uvicorn main:app --reload
-```
-
-Backend will run at:
-
-```text
-http://localhost:8000
-```
-
----
-
-### Terminal 2 — Frontend
-
-```bash
-cd /Users/Course/Multi-Agent-Research-and-Synthesis-Assistant/frontend
-
-npm install
-
-npm run dev
-```
-
-Frontend will run at:
-
-```text
-http://localhost:5173
-```
-
-Open:
-
-```text
-http://localhost:5173
-```
-
-in your browser.
-
----
-
-## Windows
-
-### Terminal 1 — Backend
-
-```cmd
-cd backend
-
-python -m venv venv
-
-venv\Scripts\activate
-
-pip install -r requirements.txt
-
-python -m uvicorn main:app --reload
-```
-
-Backend:
-
-```text
-http://localhost:8000
-```
-
----
-
-### Terminal 2 — Frontend
-
-```cmd
 cd frontend
-
 npm install
-
 npm run dev
 ```
 
-Frontend:
+Open `http://localhost:5173`. The frontend proxies `/api` calls to the backend
+at `http://localhost:8000`.
 
-```text
-http://localhost:5173
+`frontend/src/lib/commonWords.js` (a ~22k-word dictionary used by the
+client-side topic pre-check) is generated, not hand-written. It normally
+doesn't need to be touched, but to regenerate it:
+
+```bash
+cd frontend
+npm install --no-save an-array-of-english-words @derock.ir/words-frequency
+node scripts/gen-common-words.cjs
 ```
 
----
+Those two packages are dev-only word-list sources and are never added to
+`package.json` — only the generated `commonWords.js` ships with the app.
 
-# Demo Mode
+## Required paper sections
 
-No OpenAI API key is required.
+The proposed outline starts from the required academic structure:
 
-Keep:
+Title, Abstract, Keywords, Introduction, Literature Review, Proposed
+Methodology, Experimental Setup, Results, Discussion, Limitations, Future Work,
+Conclusion, and References.
 
-```javascript
-const USE_MOCK = true
-```
+The user can still add or change sections before approving the outline. The
+Writer Agent enforces the requested word-count ranges as section-level guidance.
 
-The complete workflow runs using mock data and is suitable for project demonstrations and evaluations.
+## Notes
 
----
+- API keys are read from `.env` only and are never shown in the webpage.
+- SQLite is appropriate for the local/demo version; use PostgreSQL for a real
+  concurrent multi-user deployment.
+- The app is a drafting and validation assistant. Users should still review
+  final citations before academic submission.
+## Team
 
-# API Endpoints
-
-| Method | Endpoint             | Description                      |
-| ------ | -------------------- | -------------------------------- |
-| GET    | /api/health          | Check backend and API key status |
-| POST   | /api/generate-report | Generate research report         |
-
-## Request Format
-
-```text
-Content-Type: multipart/form-data
-
-topic: string (required)
-
-files: PDF/TXT files (optional)
-
-urls: newline-separated URLs (optional)
-```
-
-## Response Format
-
-```json
-{
-  "report": "# Title\n\n## Introduction\n...",
-  "sources": {
-    "web": [
-      {
-        "title": "...",
-        "url": "...",
-        "snippet": "..."
-      }
-    ],
-    "files": [
-      {
-        "name": "...",
-        "preview": "..."
-      }
-    ],
-    "urls": [
-      {
-        "url": "...",
-        "ok": true
-      }
-    ]
-  }
-}
-```
-
----
-
-# Tech Stack
-
-| Layer          | Technology         |
-| -------------- | ------------------ |
-| Frontend       | React 18, Vite     |
-| Backend        | FastAPI            |
-| LLM Framework  | LangChain          |
-| LLM Provider   | OpenAI GPT-4o-mini |
-| Web Search     | DuckDuckGo         |
-| PDF Processing | PyPDFLoader        |
-| URL Scraping   | WebBaseLoader      |
-
----
-
-# Team
-
-| Name             | PNR          |
-| ---------------- | ------------ |
+|      Name            PNR        |
+| Rohit Kashyap    | 260250120110 |
 | Anmol Gangwar    | 260250125006 |
 | Mayur Patel      | 260250125053 |
 | Prajal Patil     | 260250125056 |
 | Vinayak Konapure | 260250125090 |
-| Rohit Kashyap    | 260250120110 |
 
 **Supervisor:** Ms. Shrishti Gupta, C-DAC Bangalore
-
 **Programme:** PGCP in Big Data Analytics & Advanced Computing, Feb 2026 Batch
-
 **Group No.:** PGCP-CD-003

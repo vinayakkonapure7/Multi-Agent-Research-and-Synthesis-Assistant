@@ -1,0 +1,232 @@
+.workspace-loading {
+  display: flex;
+  justify-content: center;
+  padding: 100px 0;
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  min-height: calc(100vh - var(--shell-header-h));
+}
+
+.workspace-sidebar {
+  border-right: 1px solid var(--rule);
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--shell-header-h);
+  height: calc(100vh - var(--shell-header-h));
+  overflow-y: auto;
+}
+
+.workspace-sidebar__topic {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+  padding: 0 8px 18px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 14px;
+}
+
+.workspace-toc__heading {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+  padding: 0 8px 10px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.workspace-toc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.workspace-toc__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  padding: 9px 8px 9px 12px;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  transition: border-color 0.15s ease;
+}
+
+.workspace-toc__item:hover .workspace-toc__title { color: var(--accent-gold); }
+
+.workspace-toc__item.is-active {
+  border-left-color: var(--accent-red);
+}
+.workspace-toc__item.is-active .workspace-toc__title {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.workspace-toc__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.workspace-toc__title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  transition: color 0.15s ease;
+}
+
+.workspace-toc__badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.status-approved .workspace-toc__badge { color: var(--accent-green); }
+.status-awaiting_review .workspace-toc__badge { color: var(--accent-gold); }
+.status-pending .workspace-toc__badge { color: var(--ink-faint); }
+
+.workspace-export {
+  margin-top: 16px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+.workspace-export-pending {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.workspace-export-pending .workspace-export {
+  margin-top: 0;
+  width: 100%;
+}
+
+.workspace-export-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.workspace-main {
+  width: 100%;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding: 48px 48px 120px;
+}
+
+@media (max-width: 860px) {
+  .workspace { grid-template-columns: 1fr; }
+  .workspace-sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--rule); }
+  .workspace-main { padding: 32px 20px 100px; }
+}
+
+/* ---- progress summary, replaces the duplicated topic line ---- */
+.workspace-progress {
+  padding: 0 8px 16px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 14px;
+}
+
+.workspace-progress__count {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.workspace-progress__count strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.workspace-progress__bar {
+  height: 2px;
+  background: var(--rule);
+  border-radius: 0;
+  overflow: hidden;
+}
+.workspace-progress__fill {
+  height: 100%;
+  background: var(--accent-green);
+  transition: width 0.3s ease;
+}
+
+/* ============================================================
+   AURORA GLASS — workspace
+   The contents rail is a fixed pane; the reading column floats free
+   of it so the draft stays the focus.
+   ============================================================ */
+.workspace-sidebar {
+  background: var(--paper-sunken);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  border-right: 1px solid var(--glass-border);
+}
+
+.workspace-toc__heading { color: var(--accent-gold); }
+.workspace-toc__num { color: var(--ink-faint); }
+
+.workspace-toc__item {
+  border-radius: var(--radius-sm);
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.workspace-toc__item:hover { background: var(--glass-bg); }
+
+/* the active section is marked by a glowing rule, not a filled block */
+.workspace-toc__item.is-active {
+  background: var(--glass-bg);
+  border-left-color: var(--accent-red);
+  box-shadow: -1px 0 12px rgba(255, 130, 110, 0.18);
+}
+
+.status-approved { color: var(--accent-green); }
+.status-awaiting_review { color: var(--accent-amber); }
+.status-pending { color: var(--ink-faint); }
+
+.workspace-progress__bar {
+  background: var(--glass-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.workspace-progress__fill {
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-gold));
+  box-shadow: 0 0 10px rgba(93, 202, 165, 0.4);
+}
+
+.workspace-export-pending {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink-faint);
+}
+.workspace-export-note { color: var(--ink-faint); }

@@ -1,0 +1,257 @@
+/* ============================================================
+   DESIGN TOKENS — "Aurora Glass"
+   A dark, depth-led interface: a deep navy-to-violet field with
+   frosted panels floating above it and cyan as the single active accent.
+
+   Colour carries meaning and never decoration:
+     cyan   — interactive, focused, highlighted
+     mint   — done, approved, verified
+     amber  — needs attention, unverified, waiting on you
+     coral  — current position, destructive, failed
+
+   Type: Source Serif 4 for anything the user reads and judges (report
+   prose, titles), Inter for interface chrome, JetBrains Mono for
+   status and system text.
+
+   Both themes are glass. Dark is the default; light is the same
+   construction over a pale aurora field.
+   ============================================================ */
+
+:root {
+  /* ---- field ---- */
+  --field-1: #080B14;
+  --field-2: #0C1730;
+  --field-3: #170A32;
+  --field-4: #081422;
+  --blob-cyan: rgba(0, 200, 255, 0.10);
+  --blob-violet: rgba(140, 60, 255, 0.12);
+
+  /* ---- glass surfaces (mapped onto the existing paper scale) ---- */
+  --paper: transparent;
+  --paper-raised: rgba(255, 255, 255, 0.055);
+  --paper-sunken: rgba(255, 255, 255, 0.028);
+
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-strong: rgba(255, 255, 255, 0.075);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-strong: rgba(255, 255, 255, 0.16);
+  --glass-blur: 22px;
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  /* ---- ink ---- */
+  --ink: #E9ECF5;
+  --ink-soft: rgba(233, 236, 245, 0.62);
+  --ink-faint: rgba(233, 236, 245, 0.36);
+
+  /* ---- rules ---- */
+  --rule: rgba(255, 255, 255, 0.075);
+  --rule-strong: rgba(255, 255, 255, 0.16);
+
+  /* ---- accents ---- */
+  --accent-gold: #4FD2FF;                        /* interactive / focus / links */
+  --accent-gold-soft: rgba(0, 200, 255, 0.11);
+  --accent-green: #5DCAA5;                       /* done / approved */
+  --accent-green-soft: rgba(93, 202, 165, 0.13);
+  --accent-red: #FF8B7A;                         /* current / danger */
+  --accent-red-soft: rgba(255, 110, 90, 0.13);
+  --accent-amber: #EFB055;                       /* needs attention */
+  --accent-amber-soft: rgba(239, 176, 85, 0.13);
+  --accent-violet: #B07CFF;
+
+  /* ---- solid button ---- */
+  --btn-solid-bg: linear-gradient(135deg, rgba(0, 190, 255, 0.30), rgba(140, 70, 255, 0.26));
+  --btn-solid-border: rgba(90, 210, 255, 0.42);
+  --btn-solid-ink: #F2FAFF;
+  --btn-solid-glow: 0 0 22px rgba(0, 190, 255, 0.20);
+
+  /* ---- type ---- */
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-ui: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --shell-header-h: 119px;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 32px rgba(0, 0, 0, 0.26);
+  --shadow-raised: 0 2px 6px rgba(0, 0, 0, 0.38), 0 20px 48px rgba(0, 0, 0, 0.34);
+
+  color-scheme: dark;
+}
+
+/* ---- light: the same glass over a pale aurora field ---- */
+:root[data-theme='light'] {
+  --field-1: #EDF2FC;
+  --field-2: #E4EDFB;
+  --field-3: #EFE9FC;
+  --field-4: #E6F1FA;
+  --blob-cyan: rgba(0, 145, 220, 0.13);
+  --blob-violet: rgba(125, 60, 245, 0.11);
+
+  --paper: transparent;
+  --paper-raised: rgba(255, 255, 255, 0.62);
+  --paper-sunken: rgba(255, 255, 255, 0.38);
+
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-bg-strong: rgba(255, 255, 255, 0.76);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-border-strong: rgba(20, 40, 80, 0.14);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  --ink: #10192B;
+  --ink-soft: rgba(16, 25, 43, 0.66);
+  --ink-faint: rgba(16, 25, 43, 0.42);
+
+  --rule: rgba(20, 40, 80, 0.10);
+  --rule-strong: rgba(20, 40, 80, 0.20);
+
+  --accent-gold: #0A7FA8;
+  --accent-gold-soft: rgba(10, 127, 168, 0.11);
+  --accent-green: #227A5C;
+  --accent-green-soft: rgba(34, 122, 92, 0.12);
+  --accent-red: #C24632;
+  --accent-red-soft: rgba(194, 70, 50, 0.11);
+  --accent-amber: #9A6A15;
+  --accent-amber-soft: rgba(154, 106, 21, 0.12);
+  --accent-violet: #6D3BC4;
+
+  --btn-solid-bg: linear-gradient(135deg, rgba(0, 140, 200, 0.92), rgba(95, 55, 200, 0.88));
+  --btn-solid-border: rgba(0, 120, 180, 0.5);
+  --btn-solid-ink: #FFFFFF;
+  --btn-solid-glow: 0 0 20px rgba(0, 140, 210, 0.22);
+
+  --shadow-card: 0 1px 2px rgba(20, 40, 80, 0.07), 0 10px 30px rgba(20, 40, 80, 0.09);
+  --shadow-raised: 0 2px 6px rgba(20, 40, 80, 0.10), 0 20px 44px rgba(20, 40, 80, 0.14);
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--field-1);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(900px 700px at 12% -8%, var(--blob-cyan), transparent 60%),
+    radial-gradient(1000px 800px at 108% 108%, var(--blob-violet), transparent 62%),
+    linear-gradient(148deg, var(--field-1) 0%, var(--field-2) 34%, var(--field-3) 68%, var(--field-4) 100%);
+  background-attachment: fixed;
+  transition: color 0.25s ease;
+}
+
+#root { min-height: 100vh; }
+
+button { font-family: var(--font-ui); cursor: pointer; }
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+input, textarea {
+  font-family: var(--font-ui);
+  background: var(--glass-bg);
+  color: var(--ink);
+  border-color: var(--glass-border-strong);
+}
+
+input::placeholder, textarea::placeholder { color: var(--ink-faint); }
+
+::selection { background: rgba(0, 200, 255, 0.28); color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--glass-border-strong); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================================
+   Shared button system
+   ============================================================ */
+.btn {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.18s ease, border-color 0.18s ease,
+              box-shadow 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+}
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn--primary {
+  background: var(--btn-solid-bg);
+  color: var(--btn-solid-ink);
+  border-color: var(--btn-solid-border);
+  box-shadow: var(--btn-solid-glow), var(--glass-inset);
+  font-weight: 500;
+}
+.btn--primary:hover:not(:disabled) {
+  box-shadow: 0 0 30px rgba(0, 190, 255, 0.34), var(--glass-inset);
+  transform: translateY(-1px);
+}
+
+.btn--ghost {
+  background: var(--glass-bg);
+  color: var(--ink-soft);
+  border-color: var(--glass-border-strong);
+}
+.btn--ghost:hover:not(:disabled) {
+  background: var(--glass-bg-strong);
+  border-color: var(--accent-gold);
+  color: var(--ink);
+}
+
+.btn--danger {
+  background: transparent;
+  color: var(--accent-red);
+  border-color: var(--glass-border-strong);
+}
+.btn--danger:hover:not(:disabled) {
+  background: var(--accent-red-soft);
+  border-color: var(--accent-red);
+}
+
+.btn--small { font-size: 13px; padding: 7px 14px; }
+
+/* ============================================================
+   App-level status screens (loading / not found)
+   ============================================================ */
+.app-status {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 84px 28px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.app-status__actions { display: flex; gap: 10px; }
